@@ -1,345 +1,252 @@
-function drawFoldEdges(scaleFactor = 1) {
-            if (!originalImage) return;
-        
-            // Initialize original dimensions if not set
-            if (originalWidthValue === null) {
-                originalWidthValue = widthValue;
-            }
-            if (originalHeightValue === null) {
-                originalHeightValue = heightValue;
-            }
-        
-            // FIXED CANVAS SIZE
-            const FIXED_CANVAS_WIDTH = 500;
-            const FIXED_CANVAS_HEIGHT = 300;
-            
-            // Constants for folds
-            const minFoldSize = 15;
-            const avgFoldSize = 30;
-            const maxFoldSize = 70;
-            const gapSize = 3;
-            const outerSpacing = 20;
-        
-            // IMAGE SIZE REDUCTION FACTOR - Adjust this to make image smaller
-            const IMAGE_SIZE_FACTOR = 0.8; // This will make the image 60% of its calculated size
-        
-            // Calculate fold size
-            const inverseFactor = 1 / scaleFactor;
-            let foldSize = Math.min(maxFoldSize, Math.max(minFoldSize, avgFoldSize * inverseFactor));
-        
-            // Calculate space taken by folds and gaps
-            const foldSpaceWidth = 
-                (edgeFoldLeft.checked ? foldSize + gapSize : 0) + 
-                (edgeFoldRight.checked ? foldSize + gapSize : 0);
-            
-            const foldSpaceHeight = 
-                (edgeFoldTop.checked ? foldSize + gapSize : 0) + 
-                (edgeFoldBottom.checked ? foldSize + gapSize : 0);
-        
-            // Calculate available space for image after folds and spacing
-            const availableWidth = FIXED_CANVAS_WIDTH - foldSpaceWidth - (outerSpacing * 2);
-            const availableHeight = FIXED_CANVAS_HEIGHT - foldSpaceHeight - (outerSpacing * 2);
-            
-            // Scale image to fit within available space while maintaining aspect ratio
-            const imageAspectRatio = originalImage.width / originalImage.height;
-            let imgWidth, imgHeight;
-        
-            // Determine which dimension is the limiting factor
-            const widthScale = availableWidth / originalImage.width;
-            const heightScale = availableHeight / originalImage.height;
-            const scale = Math.min(widthScale, heightScale);
-        
-            // Apply the additional size reduction factor
-            imgWidth = originalImage.width * scale * IMAGE_SIZE_FACTOR;
-            imgHeight = originalImage.height * scale * IMAGE_SIZE_FACTOR;
-        
-            // Set fixed canvas size
-            canvas.width = FIXED_CANVAS_WIDTH;
-            canvas.height = FIXED_CANVAS_HEIGHT;
-        
-            // Clear and set fill style
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = dominantColor || "#aaa";
-        
-            // Calculate image position (centered within available space)
-            const baseX = outerSpacing + (edgeFoldLeft.checked ? foldSize + gapSize : 0);
-            const baseY = outerSpacing + (edgeFoldTop.checked ? foldSize + gapSize : 0);
-            
-            const x = baseX + (availableWidth - imgWidth) / 2;
-            const y = baseY + (availableHeight - imgHeight) / 2;
-        
-            // Draw main image
-            if (imgWidth > 0 && imgHeight > 0) {
-                ctx.drawImage(originalImage, x, y, imgWidth, imgHeight);
-            }
-        
-            // Draw folds (adjusted to work with centered image)
-            if (edgeFoldTop.checked) {
-                ctx.beginPath();
-                ctx.moveTo(x, y - gapSize);
-                ctx.lineTo(x + imgWidth, y - gapSize);
-                ctx.lineTo(x + imgWidth + foldSize, y - gapSize - foldSize);
-                ctx.lineTo(x + foldSize, y - gapSize - foldSize);
-                ctx.closePath();
-                ctx.fill();
-            }
-        
-            if (edgeFoldBottom.checked) {
-                ctx.beginPath();
-                ctx.moveTo(x, y + imgHeight + gapSize);
-                ctx.lineTo(x + imgWidth, y + imgHeight + gapSize);
-                ctx.lineTo(x + imgWidth + foldSize, y + imgHeight + gapSize + foldSize);
-                ctx.lineTo(x + foldSize, y + imgHeight + gapSize + foldSize);
-                ctx.closePath();
-                ctx.fill();
-            }
-        
-            if (edgeFoldLeft.checked) {
-                ctx.beginPath();
-                ctx.moveTo(x - gapSize, y);
-                ctx.lineTo(x - gapSize, y + imgHeight);
-                ctx.lineTo(x - gapSize - foldSize, y + imgHeight + foldSize);
-                ctx.lineTo(x - gapSize - foldSize, y + foldSize);
-                ctx.closePath();
-                ctx.fill();
-            }
-        
-            if (edgeFoldRight.checked) {
-                ctx.beginPath();
-                ctx.moveTo(x + imgWidth + gapSize, y);
-                ctx.lineTo(x + imgWidth + gapSize, y + imgHeight);
-                ctx.lineTo(x + imgWidth + gapSize + foldSize, y + imgHeight + foldSize);
-                ctx.lineTo(x + imgWidth + gapSize + foldSize, y + foldSize);
-                ctx.closePath();
-                ctx.fill();
-            }
-        
-            // Calculate dimensions in cm
-            const foldSizeCm = foldSize / 10;
-            const coreWidthCm = (imgWidth / originalImage.width) * originalWidthValue;
-            const coreHeightCm = (imgHeight / originalImage.height) * originalHeightValue;
-        
-            widthValue = coreWidthCm;
-            heightValue = coreHeightCm;
-        
-            if (edgeFoldLeft.checked) widthValue += foldSizeCm;
-            if (edgeFoldRight.checked) widthValue += foldSizeCm;
-            if (edgeFoldTop.checked) heightValue += foldSizeCm;
-            if (edgeFoldBottom.checked) heightValue += foldSizeCm;
-        
-            widthValue = Math.min(MAX_CM, Math.max(MIN_CM, widthValue));
-            heightValue = Math.min(MAX_CM, Math.max(MIN_CM, heightValue));
-        
-            updateDimensionInputs();
-            updateSizeReadout();
-            updatePreviewSewingAllowance();
-            updatePrice();
-            checkReady();
-            debouncedCollectLineItemProperties();
-        }    
+// Mobile Menu Toggle
+const mobileMenuButton = document.getElementById("mobile-menu-button");
+const mobileMenu = document.getElementById("mobile-menu");
 
+mobileMenuButton.addEventListener("click", () => {
+  mobileMenu.classList.toggle("hidden");
+});
 
+// Close mobile menu when clicking a link
+const mobileLinks = mobileMenu.querySelectorAll("a");
+mobileLinks.forEach((link) => {
+  link.addEventListener("click", () => {
+    mobileMenu.classList.add("hidden");
+  });
+});
 
+// Smooth scrolling for anchor links
+document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+  anchor.addEventListener("click", function (e) {
+    e.preventDefault();
 
+    const targetId = this.getAttribute("href");
+    const targetElement = document.querySelector(targetId);
 
+    window.scrollTo({
+      top: targetElement.offsetTop - 80,
+      behavior: "smooth",
+    });
+  });
+});
 
+// Form submission handler
+// const contactForm = document.getElementById('contact-form');
+// contactForm.addEventListener('submit', function(e) {
+//     e.preventDefault();
 
+//     // Get form values
+//     const name = document.getElementById('name').value;
+//     const email = document.getElementById('email').value;
+//     const subject = document.getElementById('subject').value;
+//     const message = document.getElementById('message').value;
 
+//     // In a real application, you would send this data to a server
+//     // For this demo, we'll just show an alert
+//     alert(`Thank you, ${name}! Your message has been received. I'll get back to you soon.`);
 
+//     // Reset the form
+//     contactForm.reset();
+// });
 
+(function () {
+  var width,
+    height,
+    largeHeader,
+    canvas,
+    ctx,
+    points,
+    target,
+    animateHeader = true;
 
+  // Main
+  initHeader();
+  initAnimation();
+  addListeners();
 
+  function initHeader() {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    target = { x: width / 2, y: height / 2 };
 
+    largeHeader = document.getElementById("large-header");
+    largeHeader.style.height = height + "px";
 
+    canvas = document.getElementById("demo-canvas");
+    canvas.width = width;
+    canvas.height = height;
+    ctx = canvas.getContext("2d");
 
-
-
-
-
-
-function drawFoldEdges(scaleFactor = 1) {
-  if (!originalImage) return;
-
-  // Initialize original dimensions if not set
-  if (originalWidthValue === null) {
-    originalWidthValue = widthValue;
-  }
-  if (originalHeightValue === null) {
-    originalHeightValue = heightValue;
-  }
-
-  // Constants - INCREASED for better visual scaling
-  const minFoldSize = 15; // INCREASED from 10
-  const avgFoldSize = 80; // INCREASED from 60
-  const maxFoldSize = 150; // INCREASED from 120
-  const minImageSize = 250; // INCREASED from 200
-  const maxImageSize = 450; // INCREASED from 350
-  const gapSize = 3;
-  const outerSpacing = 140; // INCREASED from 120
-
-  // Calculate scaled image dimensions
-  let imgWidth = originalImage.width * scaleFactor;
-  let imgHeight = originalImage.height * scaleFactor;
-
-  // Enforce minimum image size
-  if (imgWidth < minImageSize || imgHeight < minImageSize) {
-    const scaleUp = Math.max(minImageSize / imgWidth, minImageSize / imgHeight);
-    imgWidth *= scaleUp;
-    imgHeight *= scaleUp;
-  }
-
-  // Clamp image size to maxImageSize
-  const imageScaleLimit = Math.min(
-    maxImageSize / imgWidth,
-    maxImageSize / imgHeight,
-    1
-  );
-  imgWidth *= imageScaleLimit;
-  imgHeight *= imageScaleLimit;
-
-  // Calculate fold size with min/max constraints
-  const inverseFactor = 1 / scaleFactor;
-  let foldSize = Math.min(
-    maxFoldSize,
-    Math.max(minFoldSize, avgFoldSize * inverseFactor)
-  );
-
-  // Calculate canvas dimensions
-  const canvasWidth =
-    imgWidth +
-    (edgeFoldLeft.checked ? foldSize + gapSize : 0) +
-    (edgeFoldRight.checked ? foldSize + gapSize : 0) +
-    outerSpacing * 2;
-
-  const canvasHeight =
-    imgHeight +
-    (edgeFoldTop.checked ? foldSize + gapSize : 0) +
-    (edgeFoldBottom.checked ? foldSize + gapSize : 0) +
-    outerSpacing * 2;
-
-  // Set canvas size
-  canvas.width = canvasWidth;
-  canvas.height = canvasHeight;
-
-  // Clear canvas
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = dominantColor || "#aaa";
-
-  // Calculate image position (accounting for folds and spacing)
-  const x = outerSpacing + (edgeFoldLeft.checked ? foldSize + gapSize : 0);
-  const y = outerSpacing + (edgeFoldTop.checked ? foldSize + gapSize : 0);
-
-  // Draw main image (only if it will be visible)
-  if (imgWidth > 0 && imgHeight > 0) {
-    ctx.drawImage(originalImage, x, y, imgWidth, imgHeight);
-  }
-
-  // Draw folds
-  if (edgeFoldTop.checked) {
-    ctx.beginPath();
-    ctx.moveTo(x, y - gapSize);
-    ctx.lineTo(x + imgWidth, y - gapSize);
-    ctx.lineTo(x + imgWidth + foldSize, y - gapSize - foldSize);
-    ctx.lineTo(x + foldSize, y - gapSize - foldSize);
-    ctx.closePath();
-    ctx.fill();
-  }
-
-  if (edgeFoldBottom.checked) {
-    ctx.beginPath();
-    ctx.moveTo(x, y + imgHeight + gapSize);
-    ctx.lineTo(x + imgWidth, y + imgHeight + gapSize);
-    ctx.lineTo(x + imgWidth + foldSize, y + imgHeight + gapSize + foldSize);
-    ctx.lineTo(x + foldSize, y + imgHeight + gapSize + foldSize);
-    ctx.closePath();
-    ctx.fill();
-  }
-
-  if (edgeFoldLeft.checked) {
-    ctx.beginPath();
-    ctx.moveTo(x - gapSize, y);
-    ctx.lineTo(x - gapSize, y + imgHeight);
-    ctx.lineTo(x - gapSize - foldSize, y + imgHeight + foldSize);
-    ctx.lineTo(x - gapSize - foldSize, y + foldSize);
-    ctx.closePath();
-    ctx.fill();
-  }
-
-  if (edgeFoldRight.checked) {
-    ctx.beginPath();
-    ctx.moveTo(x + imgWidth + gapSize, y);
-    ctx.lineTo(x + imgWidth + gapSize, y + imgHeight);
-    ctx.lineTo(x + imgWidth + gapSize + foldSize, y + imgHeight + foldSize);
-    ctx.lineTo(x + imgWidth + gapSize + foldSize, y + foldSize);
-    ctx.closePath();
-    ctx.fill();
-  }
-
-  // Calculate dimensions in cm
-  const foldSizeCm = foldSize / 10;
-  const coreWidthCm = (imgWidth / originalImage.width) * originalWidthValue;
-  const coreHeightCm = (imgHeight / originalImage.height) * originalHeightValue;
-
-  // Update dimensions
-  widthValue = coreWidthCm;
-  heightValue = coreHeightCm;
-
-  if (edgeFoldLeft.checked) widthValue += foldSizeCm;
-  if (edgeFoldRight.checked) widthValue += foldSizeCm;
-  if (edgeFoldTop.checked) heightValue += foldSizeCm;
-  if (edgeFoldBottom.checked) heightValue += foldSizeCm;
-
-  // Apply constraints
-  widthValue = Math.min(MAX_CM, Math.max(MIN_CM, widthValue));
-  heightValue = Math.min(MAX_CM, Math.max(MIN_CM, heightValue));
-
-  // Update UI
-  updateDimensionInputs();
-  updateSizeReadout();
-  updatePreviewSewingAllowance();
-  updatePrice();
-  checkReady();
-  debouncedCollectLineItemProperties();
-}
-const edgeFoldTop = document.getElementById("edgeFoldTop");
-const edgeFoldRight = document.getElementById("edgeFoldRight");
-const edgeFoldBottom = document.getElementById("edgeFoldBottom");
-const edgeFoldLeft = document.getElementById("edgeFoldLeft");
-
-[edgeFoldTop, edgeFoldRight, edgeFoldBottom, edgeFoldLeft].forEach(
-  (checkbox) => {
-    checkbox.addEventListener("change", () => {
-      // Update sewingAllowanceState based on checkbox state
-      edgeFoldState.top = edgeFoldTop.checked;
-      edgeFoldState.bottom = edgeFoldRight.checked;
-      edgeFoldState.left = edgeFoldBottom.checked;
-      edgeFoldState.right = edgeFoldLeft.checked;
-
-      // If no pads are checked, reset original dimensions
-      const noPadsChecked =
-        !edgeFoldTop.checked &&
-        !edgeFoldRight.checked &&
-        !edgeFoldBottom.checked &&
-        !edgeFoldLeft.checked;
-
-      if (noPadsChecked) {
-        // Reset to the last recorded original dimensions
-        if (originalWidthValue !== null) {
-          widthValue = originalWidthValue;
-        }
-        if (originalHeightValue !== null) {
-          heightValue = originalHeightValue;
-        }
-
-        // Reset the tracking variables
-        originalWidthValue = null;
-        originalHeightValue = null;
+    // create points
+    points = [];
+    for (var x = 0; x < width; x = x + width / 20) {
+      for (var y = 0; y < height; y = y + height / 20) {
+        var px = x + (Math.random() * width) / 20;
+        var py = y + (Math.random() * height) / 20;
+        var p = { x: px, originX: px, y: py, originY: py };
+        points.push(p);
       }
+    }
 
-      drawFoldEdges();
+    // for each point find the 5 closest points
+    for (var i = 0; i < points.length; i++) {
+      var closest = [];
+      var p1 = points[i];
+      for (var j = 0; j < points.length; j++) {
+        var p2 = points[j];
+        if (!(p1 == p2)) {
+          var placed = false;
+          for (var k = 0; k < 5; k++) {
+            if (!placed) {
+              if (closest[k] == undefined) {
+                closest[k] = p2;
+                placed = true;
+              }
+            }
+          }
 
-      // Explicitly call updatePrice to ensure it reflects the current state
-      updatePrice();
+          for (var k = 0; k < 5; k++) {
+            if (!placed) {
+              if (getDistance(p1, p2) < getDistance(p1, closest[k])) {
+                closest[k] = p2;
+                placed = true;
+              }
+            }
+          }
+        }
+      }
+      p1.closest = closest;
+    }
+
+    // assign a circle to each point
+    for (var i in points) {
+      var c = new Circle(
+        points[i],
+        2 + Math.random() * 2,
+        "rgba(255,255,255,0.3)"
+      );
+      points[i].circle = c;
+    }
+  }
+
+  // Event handling
+  function addListeners() {
+    if (!("ontouchstart" in window)) {
+      window.addEventListener("mousemove", mouseMove);
+    }
+    window.addEventListener("scroll", scrollCheck);
+    window.addEventListener("resize", resize);
+  }
+
+  function mouseMove(e) {
+    var posx = (posy = 0);
+    if (e.pageX || e.pageY) {
+      posx = e.pageX;
+      posy = e.pageY;
+    } else if (e.clientX || e.clientY) {
+      posx =
+        e.clientX +
+        document.body.scrollLeft +
+        document.documentElement.scrollLeft;
+      posy =
+        e.clientY +
+        document.body.scrollTop +
+        document.documentElement.scrollTop;
+    }
+    target.x = posx;
+    target.y = posy;
+  }
+
+  function scrollCheck() {
+    if (document.body.scrollTop > height) animateHeader = false;
+    else animateHeader = true;
+  }
+
+  function resize() {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    largeHeader.style.height = height + "px";
+    canvas.width = width;
+    canvas.height = height;
+  }
+
+  // animation
+  function initAnimation() {
+    animate();
+    for (var i in points) {
+      shiftPoint(points[i]);
+    }
+  }
+
+  function animate() {
+    if (animateHeader) {
+      ctx.clearRect(0, 0, width, height);
+      for (var i in points) {
+        // detect points in range
+        if (Math.abs(getDistance(target, points[i])) < 4000) {
+          points[i].active = 0.3;
+          points[i].circle.active = 0.6;
+        } else if (Math.abs(getDistance(target, points[i])) < 20000) {
+          points[i].active = 0.1;
+          points[i].circle.active = 0.3;
+        } else if (Math.abs(getDistance(target, points[i])) < 40000) {
+          points[i].active = 0.02;
+          points[i].circle.active = 0.1;
+        } else {
+          points[i].active = 0;
+          points[i].circle.active = 0;
+        }
+
+        drawLines(points[i]);
+        points[i].circle.draw();
+      }
+    }
+    requestAnimationFrame(animate);
+  }
+
+  function shiftPoint(p) {
+    TweenLite.to(p, 1 + 1 * Math.random(), {
+      x: p.originX - 50 + Math.random() * 100,
+      y: p.originY - 50 + Math.random() * 100,
+      ease: Circ.easeInOut,
+      onComplete: function () {
+        shiftPoint(p);
+      },
     });
   }
-);
+
+  // Canvas manipulation
+  function drawLines(p) {
+    if (!p.active) return;
+    for (var i in p.closest) {
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      ctx.lineTo(p.closest[i].x, p.closest[i].y);
+      ctx.strokeStyle = "rgba(156,217,249," + p.active + ")";
+      ctx.stroke();
+    }
+  }
+
+  function Circle(pos, rad, color) {
+    var _this = this;
+
+    // constructor
+    (function () {
+      _this.pos = pos || null;
+      _this.radius = rad || null;
+      _this.color = color || null;
+    })();
+
+    this.draw = function () {
+      if (!_this.active) return;
+      ctx.beginPath();
+      ctx.arc(_this.pos.x, _this.pos.y, _this.radius, 0, 2 * Math.PI, false);
+      ctx.fillStyle = "rgba(156,217,249," + _this.active + ")";
+      ctx.fill();
+    };
+  }
+
+  // Util
+  function getDistance(p1, p2) {
+    return Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2);
+  }
+})();
