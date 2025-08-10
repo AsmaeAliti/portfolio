@@ -249,4 +249,11 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
   function getDistance(p1, p2) {
     return Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2);
   }
+
+  const favicon = document.getElementById("favicon");
+  document.addEventListener("visibilitychange", () => {
+    favicon.href = (document.hidden) ? "img/neutral.png" : "img/happy.png";
+  });
+
+
 })();
