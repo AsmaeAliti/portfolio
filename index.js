@@ -255,5 +255,20 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     favicon.href = (document.hidden) ? "img/neutral.png" : "img/happy.png";
   });
 
+  // Download CV functionality
+  const downloadBtn = document.getElementById('DownloadCV');
+  downloadBtn.addEventListener('click', () => {
+      const cvUrl = 'img/ASMAE_ALITI_Resume.pdf';
+      
+      // Create a temporary link element
+      const link = document.createElement('a');
+      link.href = cvUrl;
+      link.download = 'ASMAE_ALITI_Resume.pdf'; // Updated filename
+      
+      // Append to body, click, and remove
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+  });
 
 })();
