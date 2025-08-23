@@ -77,3 +77,46 @@ body {
   position: relative;
   z-index: 2; /* ensure above canvas */
 }
+
+
+.eyes-container{
+  height: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* .face-container{
+  outline: 10px solid black;
+  height: 50%;
+  width: 50%;
+} */
+.theeye{
+  margin: 0px 20px;
+  height: 100px;
+  aspect-ratio: 1;
+  background-color: white;
+  outline: 10px solid black;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.thepupil{
+  height:50px;
+  aspect-ratio:1;
+  /* background-color: rgb(46, 36, 36); */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 5px;
+}
+
+.theinside{
+  height:25px;
+  aspect-ratio:1;
+  background-color: black;
+  border-radius: 50%;
+}
