@@ -81,16 +81,16 @@ body {
 
 .eyes-container{
   height: 500px;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-
-
 	background-image: url(../img/seamless-space.png);
 	background-color: black;
 	margin: 0;
 	overflow: hidden;
 	animation: background-scroll 100s linear infinite;
+  flex-direction: column;
 }
 
 .theeye{
@@ -132,11 +132,9 @@ body {
 
 
 .astronaut {
- position:absolute;
-	display: inline-block;
 	transition: 4s;
 	cursor: pointer;
-   z-index: 2000;
+  z-index: 2000;
 }
 
  @-moz-keyframes spin {
@@ -156,10 +154,11 @@ transform:rotate(360deg);
 }
 }
 
-.x {
-	-webkit-animation: x 20s linear infinite alternate;
-	animation: x 20s linear infinite alternate;
-}
+  .eyes-position{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
  @-webkit-keyframes x {
  100% {
