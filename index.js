@@ -29,7 +29,6 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
   });
 });
 
-
 (function () {
   var width,
     height,
@@ -232,7 +231,7 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     return Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2);
   }
 
-  // change fav icon on chenging the tab 
+  // change fav icon on chenging the tab
   const favicon = document.getElementById("favicon");
   document.addEventListener("visibilitychange", () => {
     favicon.href = document.hidden ? "img/neutral.png" : "img/happy.png";
@@ -366,5 +365,70 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     inside1.style.transform = `translate(${pupilX}px, ${pupilY}px)`;
   });
 
+  // GSAP ScrollTrigger Horizontal Scroll section
+  gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+  (function ($) {
+    $(document).ready(function () {
+      initialiseApp();
 
+      function initialiseApp() {
+        initialiseGSAPScrollTriggerPinningHorizontal();
+        initialiseLenisScroll();
+      }
+
+      function initialiseGSAPScrollTriggerPinningHorizontal() {
+        let sectionPin = document.querySelector("#section_pin");
+
+        let containerAnimation = gsap.to(sectionPin, {
+          scrollTrigger: {
+            trigger: "#projects",
+            start: "top top",
+            end: () => "+=" + sectionPin.offsetWidth,
+            pin: true,
+            scrub: true,
+          },
+          x: () =>
+            -(sectionPin.scrollWidth - document.documentElement.clientWidth) +
+            "px",
+          ease: "none",
+        });
+
+        var imageWrappers = sectionPin.querySelectorAll(".project_wrapper");
+
+        imageWrappers.forEach((imageWrapper) => {
+          var imageWrapperID = imageWrapper.id;
+
+          gsap.to(imageWrapper, {
+            scrollTrigger: {
+              trigger: imageWrapper,
+              start: "left center",
+              end: "right center",
+              containerAnimation: containerAnimation,
+              toggleClass: {
+                targets: "." + imageWrapperID,
+                className: "active",
+              },
+            },
+          });
+        });
+      }
+
+      function initialiseLenisScroll() {
+        const lenis = new Lenis({
+          smoothWheel: true,
+          duration: 1.2,
+        });
+
+        lenis.on("scroll", ScrollTrigger.update);
+
+        gsap.ticker.add((time) => {
+          lenis.raf(time * 1000);
+        });
+
+        gsap.ticker.lagSmoothing(0);
+      }
+    });
+  })(jQuery);
+
+  
 })();
