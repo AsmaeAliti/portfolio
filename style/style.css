@@ -272,3 +272,9 @@ body {
   opacity: 1;
 }
 
+@media screen and (max-width: 768px) {
+  .section.four.section_to-pin .section_pin .content_wrapper {
+    min-width: 414px;
+  }
+  
+}
