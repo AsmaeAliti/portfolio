@@ -234,7 +234,7 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
   // change fav icon on chenging the tab
   const favicon = document.getElementById("favicon");
   document.addEventListener("visibilitychange", () => {
-    favicon.href = document.hidden ? "img/neutral.png" : "img/happy.png";
+    favicon.href = document.hidden ? "../img/neutral.png" : "../img/happy.png";
   });
 
   // Eye following cursor section
