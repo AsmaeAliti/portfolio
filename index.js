@@ -367,6 +367,7 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
 
   // GSAP ScrollTrigger Horizontal Scroll section
   gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+  
   (function ($) {
     $(document).ready(function () {
       initialiseApp();
