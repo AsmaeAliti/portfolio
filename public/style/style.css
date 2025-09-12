@@ -135,7 +135,7 @@ body {
 .astronaut {
   transition: 4s;
   cursor: pointer;
-  z-index: 2000;
+  z-index: 20;
 }
 
 @-moz-keyframes spin {
@@ -278,3 +278,15 @@ body {
   }
 
 }
+
+
+/* modal sound */
+  .modal {
+    transition: opacity 0.25s ease;
+    z-index: 60;
+
+  }
+  body.modal-active {
+    overflow-x: hidden;
+    overflow-y: visible !important;
+  }

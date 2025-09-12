@@ -1,3 +1,16 @@
+var closemodal = document.querySelectorAll(".modal-close");
+for (var i = 0; i < closemodal.length; i++) {
+  closemodal[i].addEventListener("click", toggleModal);
+}
+
+function toggleModal() {
+  const body = document.querySelector("body");
+  const modal = document.querySelector(".modal");
+  modal.classList.toggle("opacity-0");
+  modal.classList.toggle("pointer-events-none");
+  body.classList.toggle("modal-active");
+}
+
 // Mobile Menu Toggle
 const mobileMenuButton = document.getElementById("mobile-menu-button");
 const mobileMenu = document.getElementById("mobile-menu");
