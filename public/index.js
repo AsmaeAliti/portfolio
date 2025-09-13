@@ -3,6 +3,15 @@ for (var i = 0; i < closemodal.length; i++) {
   closemodal[i].addEventListener("click", toggleModal);
 }
 
+var  yesBtn = document.querySelector("#sound-yes");
+// audio on click yes
+const bgMusic = new Audio("./img/black-noise.wav");
+bgMusic.loop = true;
+
+yesBtn.addEventListener("click", () => {
+  bgMusic.play();
+});
+
 function toggleModal() {
   const body = document.querySelector("body");
   const modal = document.querySelector(".modal");
